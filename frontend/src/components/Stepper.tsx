@@ -1,4 +1,4 @@
-import React, { useState, Children, useRef, useLayoutEffect, HTMLAttributes, ReactNode } from 'react';
+import React, { useState, Children, useRef, useLayoutEffect, HTMLAttributes, ReactNode, JSX } from 'react';
 import { motion, AnimatePresence, Variants } from 'motion/react';
 
 import './Stepper.css';
