@@ -4,7 +4,7 @@ import Image from "next/image";
 import CardNav from '../components/CardNav'; 
 import SpotlightCard from '../components/SpotlightCard';
 import Stepper, { Step } from '../components/Stepper';
-import { GoArrowUpRight } from 'react-icons/go';
+import { GoArrowUpRight } from 'react-icons/go'; 
 
 import { useState } from "react";
 
@@ -17,7 +17,7 @@ export default function Home() {
       textColor: "#fff",
       
       links: [
-        { label: "Company", href: "google.com", ariaLabel: "About Company" },
+        { label: "Company", href: "./routes/chat-page", ariaLabel: "About Company" },
         { label: "Careers", href: "google.com",ariaLabel: "About Careers" }
       ]
     },

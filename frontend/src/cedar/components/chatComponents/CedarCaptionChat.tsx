@@ -1,3 +1,4 @@
+"use client";
 import React, { useCallback } from 'react';
 import { FloatingContainer } from '@/cedar/components/structural/FloatingContainer';
 import { ChatInput } from '@/cedar/components/chatInput/ChatInput';
