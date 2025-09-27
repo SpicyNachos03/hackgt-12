@@ -94,7 +94,7 @@ export default function Home() {
           <p style={{ color: '#ffffff' }}>Unique Different Thing Here</p>
         </SpotlightCard>
       </div>
-
+      <a href="/auth/login">Login</a>
         <Stepper
       initialStep={1}
       onStepChange={(step) => {
