@@ -50,7 +50,7 @@ const CardNav: React.FC<CardNavProps> = ({
   /** Defaults keep component working even if not provided */
   isAuthenticated = false,
   loginPath = "/auth/login",
-  postLoginRedirect = "/pages/chat-page",
+  postLoginRedirect = "/routes/chat-page",
 }) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
