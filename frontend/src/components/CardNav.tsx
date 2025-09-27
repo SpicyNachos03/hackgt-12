@@ -2,7 +2,7 @@
 
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-// use your own icon import if react-icons is not available
+import { useRouter } from "next/navigation";
 import { GoArrowUpRight } from 'react-icons/go';
 import './CardNav.css';
 
@@ -20,7 +20,7 @@ export type CardNavItem = {
 };
 
 export interface CardNavProps {
-  logo: string ;
+  logo: string;
   logoAlt?: string;
   items: CardNavItem[];
   className?: string;
@@ -29,6 +29,11 @@ export interface CardNavProps {
   menuColor?: string;
   buttonBgColor?: string;
   buttonTextColor?: string;
+
+  /** ⬇️ Auth-aware CTA props (lightweight, no CSS changes) */
+  isAuthenticated?: boolean;          // default: false
+  loginPath?: string;                 // default: "/auth/login" (use "/api/auth/login" for v3)
+  postLoginRedirect?: string;         // default: "/pages/chat-page"
 }
 
 const CardNav: React.FC<CardNavProps> = ({
@@ -40,13 +45,19 @@ const CardNav: React.FC<CardNavProps> = ({
   baseColor = '#fff',
   menuColor,
   buttonBgColor,
-  buttonTextColor
+  buttonTextColor,
+
+  /** Defaults keep component working even if not provided */
+  isAuthenticated = false,
+  loginPath = "/auth/login",
+  postLoginRedirect = "/pages/chat-page",
 }) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const navRef = useRef<HTMLDivElement | null>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const router = useRouter();
 
   const calculateHeight = () => {
     const navEl = navRef.current;
@@ -66,6 +77,7 @@ const CardNav: React.FC<CardNavProps> = ({
         contentEl.style.position = 'static';
         contentEl.style.height = 'auto';
 
+        // force reflow
         contentEl.offsetHeight;
 
         const topBar = 60;
@@ -158,6 +170,16 @@ const CardNav: React.FC<CardNavProps> = ({
     if (el) cardsRef.current[i] = el;
   };
 
+  /** One lightweight handler for the CTA */
+  const handleCta = () => {
+    if (isAuthenticated) {
+      router.push(postLoginRedirect);
+    } else {
+      const url = `${loginPath}?returnTo=${encodeURIComponent(postLoginRedirect)}`;
+      router.push(url);
+    }
+  };
+
   return (
     <div className={`card-nav-container ${className}`}>
       <nav ref={navRef} className={`card-nav ${isExpanded ? 'open' : ''}`} style={{ backgroundColor: baseColor }}>
@@ -182,8 +204,10 @@ const CardNav: React.FC<CardNavProps> = ({
             type="button"
             className="card-nav-cta-button"
             style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+            onClick={handleCta}
+            aria-label={isAuthenticated ? 'Open chat' : 'Sign up or login'}
           >
-            Get Started
+            {isAuthenticated ? 'Open Chat' : 'Login'}
           </button>
         </div>
 

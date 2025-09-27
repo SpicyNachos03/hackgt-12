@@ -74,7 +74,6 @@ export default function Home() {
           <p style={{ color: '#ffffff' }}>Card 3 content goes here.</p>
         </SpotlightCard>
       </div>
-      <a href="/auth/login">Login</a>
         <Stepper
       initialStep={1}
       onStepChange={(step) => {
