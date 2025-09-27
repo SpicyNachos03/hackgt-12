@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
+from langchain_agentic import check
 
 def create_app():
     app = Flask(__name__)
@@ -61,7 +62,55 @@ def create_app():
         }
         
         return jsonify(response_data), 201
-    
+    @app.route('/api/compatibility', methods=['GET'])
+    def compatibility_check():
+        def _as_list(qval):
+            """
+            Convert a comma-separated query string to a clean list.
+            Handles empty/missing values gracefully.
+            """
+            if not qval:
+                return []
+            # Split on commas, strip whitespace, drop empties
+            return [part.strip() for part in qval.split(',') if part.strip()]
+
+        drug = request.args.get('drug', '').strip()
+        if not drug:
+            return jsonify({'error': "Missing required query parameter 'drug'"}), 400
+
+        allergies = _as_list(request.args.get('allergies', ''))
+        conditions = _as_list(request.args.get('conditions', ''))
+        ongoing_meds = _as_list(request.args.get('ongoingMeds', ''))
+
+        try:
+            # Call your LangChain pipeline (returns a Pydantic model)
+            result = check(
+                drug=drug,
+                allergies=allergies,
+                conditions=conditions,
+                ongoingMeds=ongoing_meds
+            )
+            # Pydantic -> dict for JSON response
+            payload = result.model_dump()
+            return jsonify({
+                'ok': True,
+                'input': {
+                    'drug': drug,
+                    'allergies': allergies,
+                    'conditions': conditions,
+                    'ongoingMeds': ongoing_meds
+                },
+                'result': payload
+            }), 200
+
+        except Exception as e:
+            # Log the exception server-side if you like
+            # import traceback; traceback.print_exc()
+            return jsonify({
+                'ok': False,
+                'error': 'Failed to compute compatibility',
+                'details': str(e)
+            }), 500    
     # Error handlers
     @app.errorhandler(404)
     def not_found(error):
