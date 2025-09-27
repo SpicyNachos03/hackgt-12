@@ -1,6 +1,5 @@
 
 import { Mastra } from '@mastra/core/mastra';
-import { MastraAuthAuth0 } from '@mastra/auth-auth0';
 import { PinoLogger } from '@mastra/loggers';
 import { LibSQLStore } from '@mastra/libsql';
 import { weatherWorkflow } from './workflows/weather-workflow';
@@ -16,8 +15,6 @@ export const mastra = new Mastra({
   logger: new PinoLogger({
     name: 'Mastra',
     level: 'info',
-  }),
-  server: {
-    experimental_auth: new MastraAuthAuth0(),
-  }
+  })
+
 });
