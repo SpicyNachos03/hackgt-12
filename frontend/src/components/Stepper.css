@@ -88,7 +88,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: #5227ff;
+  background-color: rgba(171, 82, 255, 0.746);
   color: #060010;
   font-weight: 500;
   letter-spacing: -0.025em;
@@ -97,11 +97,11 @@
 }
 
 .next-button:hover {
-  background-color: #5227ff;
+  background-color: rgba(171, 82, 255, 0.746);
 }
 
 .next-button:active {
-  background-color: #5227ff;
+  background-color: rgba(171, 82, 255, 0.746);
 }
 
 .step-indicator {
@@ -139,7 +139,7 @@
   flex: 1;
   overflow: hidden;
   border-radius: 0.25rem;
-  background-color: #52525b;
+  background-color: rgba(171, 82, 255, 0.746);
 }
 
 .step-connector-inner {
@@ -154,3 +154,12 @@
   width: 1rem;
   color: #000;
 }
+
+.step-default,
+.step-content-default,
+.footer-nav,
+.step-circle-container  {
+  background-color: #000; /* Black backgrounds */
+  color: #fff; /* White text */
+}
+

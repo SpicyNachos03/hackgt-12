@@ -4,6 +4,7 @@ import Image from "next/image";
 import CardNav from '../components/CardNav'; 
 import SpotlightCard from '../components/SpotlightCard';
 import Stepper, { Step } from '../components/Stepper';
+import LiquidEther from '../components/LiquidEther';
 import { GoArrowUpRight } from 'react-icons/go'; 
 
 import { useState } from "react";
@@ -12,22 +13,21 @@ export default function Home() {
   const [name, setName] = useState("");
   const items = [
     {
-      label: "Tutorials",
+      label: "Unique Factor",
       bgColor: "#0D0716",
       textColor: "#fff",
       
       links: [
-        { label: "Company", href: "./routes/chat-page", ariaLabel: "About Company" },
-        { label: "Careers", href: "google.com",ariaLabel: "About Careers" }
+        { label: "Chat page", href: "./routes/chat-page", ariaLabel: "Chat page" }
       ]
     },
     {
-      label: "Unique Factor", 
+      label: "Tutorials", 
       bgColor: "#170D27",
       textColor: "#fff",
       links: [
-        { label: "Featured", href: "google.com",ariaLabel: "Featured Projects" },
-        { label: "Case Studies", href: "google.com",ariaLabel: "Project Case Studies" }
+        { label: "Sample Cases", href: "google.com",ariaLabel: "Sample Cases" },
+        { label: "Step-By-Step", href: "google.com",ariaLabel: "Step by Step" }
       ]
     },
     {
@@ -35,15 +35,35 @@ export default function Home() {
       bgColor: "#271E37", 
       textColor: "#fff",
       links: [
-        { label: "Email", href: "google.com",ariaLabel: "Email us" },
-        { label: "Twitter", href: "google.com",ariaLabel: "Twitter" },
-        { label: "LinkedIn", href: "google.com", ariaLabel: "LinkedIn" }
+        { label: "Docs", href: "google.com",ariaLabel: "Docs" },
+        { label: "Contact Us", href: "google.com",ariaLabel: "Step by Step" }
       ]
     }
   ];
   
   return (
     <div style={{ padding: '20px', backgroundColor: '#f0f0f0', minHeight: '100vh' }}>
+
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+  <LiquidEther
+    colors={[ '#5227FF', '#FF9FFC', '#B19EEF' ]}
+    mouseForce={20}
+    cursorSize={100}
+    isViscous={false}
+    viscous={30}
+    iterationsViscous={32}
+    iterationsPoisson={32}
+    resolution={0.5}
+    isBounce={false}
+    autoDemo={true}
+    autoSpeed={0.5}
+    autoIntensity={2.2}
+    takeoverDuration={0.25}
+    autoResumeDelay={3000}
+    autoRampDuration={0.6}
+  />
+  </div>
+
     <CardNav
       logo="/logo.png"  
       logoAlt="Company Logo"
@@ -64,14 +84,14 @@ export default function Home() {
   
     
     <div style={{ marginTop: '15%', display: 'flex', gap: '30px', justifyContent: 'center', flexWrap: 'wrap' }}>
-        <SpotlightCard className="custom-spotlight-card" spotlightColor="rgba(0, 229, 255, 0.39)">
-          <p style={{ color: '#ffffff'}}>Card 1 content goes here.</p>
+        <SpotlightCard spotlightColor="rgba(132, 0, 255, 0.39)">
+          <p style={{ color: '#ffffff'}}>Main Purpose of This Here</p>
         </SpotlightCard>
-        <SpotlightCard className="custom-spotlight-card" spotlightColor="rgba(255, 0, 229, 0.39)">
-          <p style={{ color: '#ffffff' }}>Card 2 content goes here.</p>
+        <SpotlightCard spotlightColor="rgba(132, 0, 255, 0.39)">
+          <p style={{ color: '#ffffff' }}>Picture of Something Here</p>
         </SpotlightCard>
-        <SpotlightCard className="custom-spotlight-card" spotlightColor="rgba(0, 255, 100, 0.39)">
-          <p style={{ color: '#ffffff' }}>Card 3 content goes here.</p>
+        <SpotlightCard spotlightColor="rgba(132, 0, 255, 0.39)">
+          <p style={{ color: '#ffffff' }}>Unique Different Thing Here</p>
         </SpotlightCard>
       </div>
 
@@ -105,4 +125,6 @@ export default function Home() {
     </div>
   );
 }
+
+
 
