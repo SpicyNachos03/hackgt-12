@@ -1,5 +1,4 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import { CedarCaptionChat } from "../../../cedar/components/chatComponents/CedarCaptionChat";
 import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
