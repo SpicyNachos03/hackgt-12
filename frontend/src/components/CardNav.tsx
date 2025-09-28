@@ -212,7 +212,7 @@ const CardNav: React.FC<CardNavProps> = ({
             onClick={handleCta}
             aria-label={user ? 'Open chat' : 'Sign up or login'}
           >
-            {user ? 'Open Chat' : 'Login'}
+            {user ? 'Open Chat' : 'Try It Out'}
           </button>
         </div>
 
