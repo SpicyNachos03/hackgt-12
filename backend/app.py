@@ -175,7 +175,7 @@ def create_app():
             return jsonify({'ok': False, 'error': 'User data is not loaded on the server.'}), 500
         #print(user_id)
         #access the row given the requested userID
-        obtained_df = user_info_df[user_info_df['Patient_ID'] == user_id]
+        obtained_df = user_info_df[user_info_df['Patient_ID'] == int(user_id)]
         if not obtained_df.empty:
                 user_data = obtained_df.to_dict('records')[0]
                 return jsonify({'ok': True, 'user': user_data}), 200
