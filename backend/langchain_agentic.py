@@ -54,7 +54,7 @@ PROMPT = ChatPromptTemplate.from_messages([
     ),
 ])
 
-llm = ChatOpenAI(model="gpt-5", temperature=0).with_structured_output(CompatibilityResult)
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0).with_structured_output(CompatibilityResult)
 
 # Chain:
 #   1) grab warn/prec via tool

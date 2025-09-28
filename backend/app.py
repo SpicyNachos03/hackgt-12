@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
 from langchain_agentic import check
+from research_agent import suggest_alternatives
 
 def create_app():
     app = Flask(__name__)
@@ -62,7 +63,7 @@ def create_app():
         }
         
         return jsonify(response_data), 201
-    @app.route('/api/compatibility', methods=['GET'])
+    @app.route('/api/compatibility', methods=['GET']) 
     def compatibility_check():
         def _as_list(qval):
             """
@@ -112,6 +113,53 @@ def create_app():
                 'details': str(e)
             }), 500    
     # Error handlers
+
+    @app.route('/api/research', methods=['GET']) 
+    def research_check():
+        current_option  = request.args.get('current_option', '').strip()
+        if not current_option:
+            return jsonify({'error': "Missing required query parameter 'current_option'"}), 400
+        issue = request.args.get('issue', '').strip()
+        search_hint = request.args.get('search_hint', '').strip()
+        try:
+            # Call your LangChain pipeline (returns a Pydantic model)
+            result = suggest_alternatives(
+                issue=issue,
+                current_option=current_option,
+                search_hint=search_hint,
+            )
+            # Pydantic -> dict for JSON response
+            payload = result.model_dump()
+            return jsonify({
+                'ok': True,
+                'input': {
+                    'issue': issue,
+                    'current_option': current_option,
+                    'search_hint': search_hint,
+                },
+                'result': payload
+            }), 200
+        except Exception as e:
+            # Log the exception server-side if you like
+            # import traceback; traceback.print_exc()
+            return jsonify({
+                'ok': False,
+                'error': 'Failed to parse through pubmed accurately',
+                'details': str(e)
+            }), 500    
+    # Error handlers
+
+
+
+
+
+
+
+
+
+
+
+
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({'error': 'Endpoint not found'}), 404
