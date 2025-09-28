@@ -27,14 +27,14 @@ export default function Home() {
       bgColor: "#271E37",
       textColor: "#fff",
       links: [
-        { label: "Docs", href: "google.com", ariaLabel: "Docs" },
+        { label: "Docs", href: "https://github.com/SpicyNachos03/hackgt-12/tree/main", ariaLabel: "Docs" },
         { label: "Contact Us", href: "google.com", ariaLabel: "Step by Step" },
       ],
     },
   ];
   return (
-    <div style={{ padding: "25px", backgroundColor: "#e3e3e3ff", minHeight: "100vh" }}>
-      <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}>
+    <div style={{ padding: "25px", minHeight: "100vh", zIndex: 1 }}>
+      <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}>
         <LiquidEther
           colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
           mouseForce={20}
@@ -66,76 +66,43 @@ export default function Home() {
         postLoginRedirect="/routes/chat-page"
       />
 
-      <header style={{ textAlign: "center", marginBottom: "10%" }}>
-        <h1 style={{ fontWeight: "900", fontSize: "10rem", marginTop: "25%", color: "#271E37" }}>Clairvoyance</h1>
-        <p style={{ fontSize: "1.5rem", color: "#555", marginTop: "10px" }}>Where New Knowledge Meets Old Knowledge</p>
+      <header
+        style={{
+          position: "relative",
+          zIndex: 2, // ensures it's above background
+          textAlign: "center",
+          marginBottom: "10%",
+        }}
+      >
+        <h1 style={{ fontWeight: "900", fontSize: "10rem", marginTop: "25%", color: "#271E37" }}>
+          Clairvoyance
+        </h1>
+        <p style={{ fontSize: "1.5rem", color: "#555", marginTop: "10px" }}>
+          Where New Knowledge Meets Old Knowledge
+        </p>
       </header>
 
-<div
-  style={{
-    marginTop: "5%",
-    marginBottom: "40px",
-    display: "flex",
-    gap: "40px", // more spacing between cards
-    justifyContent: "center",
-    alignItems: "stretch",
-    flexWrap: "nowrap",
-    width: "100%",
-    maxWidth: "1600px", // 🔑 was 1200px, now wider
-    marginLeft: "auto",
-    marginRight: "auto",
-    padding: "0 40px", // padding inside container so text doesn’t hit edges
-  }}
->
-  <SpotlightCard
-    spotlightColor="rgba(132, 0, 255, 0.39)"
-    styles={{
-      flex: "1 1 0",
-      minWidth: "450px", // 🔑 gives each card more width
-      padding: "24px",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-    }}
-  >
-    <p style={{ color: "#ffffff" }}>
-      Our core mission is to solve the knowledge gap where experienced doctors may struggle to keep pace with rapidly evolving medication research compared to newer providers. Closing this gap is vital to ensure every patient receives care informed by the latest medical evidence, regardless of their doctor’s career stage.
-    </p>
-  </SpotlightCard>
+      <div className="spotlight-container" >
+        <SpotlightCard className="spotlight-card" spotlightColor="rgba(132, 0, 255, 0.39)">
+          <p className="spotlight-text">
+            Our core mission is to solve the knowledge gap where experienced doctors may struggle to keep pace with rapidly evolving medication research compared to newer providers. Closing this gap is vital to ensure every patient receives care informed by the latest medical evidence, regardless of their doctor’s career stage.
+          </p>
+        </SpotlightCard>
 
-  <SpotlightCard
-    spotlightColor="rgba(132, 0, 255, 0.39)"
-    style={{
-      flex: "1 1 0",
-      minWidth: "450px",
-      padding: "24px",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-    }}
-  >
-    <p style={{ color: "#ffffff" }}>
-      Our agentic AI keeps HCPs current by comparing existing prescriptions with the latest drug data, highlighting compatibility issues and surfacing newer, evidence-backed alternatives. This ensures providers always know whether a patient’s treatment plan can be improved with safer or more effective options.
-    </p>
-  </SpotlightCard>
+        <SpotlightCard className="spotlight-card" spotlightColor="rgba(132, 0, 255, 0.39)">
+          <p className="spotlight-text">
+            Our agentic AI keeps HCPs current by comparing existing prescriptions with the latest drug data, highlighting compatibility issues and surfacing newer, evidence-backed alternatives. This ensures providers always know whether a patient’s treatment plan can be improved with safer or more effective options.
+          </p>
+        </SpotlightCard>
 
-  <SpotlightCard
-    spotlightColor="rgba(132, 0, 255, 0.39)"
-    style={{
-      flex: "1 1 0",
-      minWidth: "450px",
-      padding: "24px",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-    }}
-  >
-    <p style={{ color: "#ffffff" }}>
-      Our solution stands apart by focusing on prescription affirmation, reducing uncertainty for doctors and freeing patients from unnecessary visits. While other health tech tools chase efficiency, we deliver confidence and clarity in care.
-    </p>
-  </SpotlightCard>
-</div>
+        <SpotlightCard className="spotlight-card" spotlightColor="rgba(132, 0, 255, 0.39)">
+          <p className="spotlight-text">
+            Our solution stands apart by focusing on prescription affirmation, reducing uncertainty for doctors and freeing patients from unnecessary visits. While other health tech tools chase efficiency, we deliver confidence and clarity in care.
+          </p>
+        </SpotlightCard>
+      </div>
 
+    <div style={{ position: "relative", zIndex: 2 }}>
       <Stepper
         initialStep={1}
         onStepChange={(step) => {
@@ -175,6 +142,7 @@ export default function Home() {
           <p>Click the button to try it out yourself?</p>
         </Step>
       </Stepper>
+      </div>
     </div>
   );
 }

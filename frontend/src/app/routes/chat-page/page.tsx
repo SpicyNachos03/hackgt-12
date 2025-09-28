@@ -56,7 +56,7 @@ export default function ChatPage() {
       bgColor: "#271E37",
       textColor: "#fff",
       links: [
-        { label: "Docs", href: "google.com", ariaLabel: "Docs" },
+        { label: "Docs", href: "https://github.com/SpicyNachos03/hackgt-12/tree/main", ariaLabel: "Docs" },
         { label: "Contact Us", href: "google.com", ariaLabel: "Step by Step" },
       ],
     },

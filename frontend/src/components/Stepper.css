@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: 1.25rem; /* was 1rem */
+  
 }
 
 @media (min-width: 640px) {
@@ -119,6 +120,7 @@
 .step-circle-container {
   background-color: #000; /* Black backgrounds */
   color: #fff; /* White text */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 /* Thicker line and always-visible track */
