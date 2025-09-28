@@ -1,13 +1,17 @@
 "use client";
+
+import { useRouter } from "next/navigation";
 import { CedarCaptionChat } from "../../../cedar/components/chatComponents/CedarCaptionChat";
 import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 import React from 'react'; 
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import "primereact/resources/themes/bootstrap4-dark-purple/theme.css"
+import { TabView, TabPanel } from "primereact/tabview";
+import "primereact/resources/themes/tailwind-light/theme.css";
 
 export default function ChatPage() {
-
+  const router = useRouter();
 
   return (
     <div>

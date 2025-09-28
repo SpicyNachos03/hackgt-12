@@ -16,13 +16,14 @@ export default function Home() {
   const router = useRouter();
   const { user, isLoading, error } = useUser();
 
+  /*
   // Redirect authenticated users straight to chat page
   useEffect(() => {
     if (user) {
       router.replace("/routes/chat-page");
     }
   }, [user, router]);
-
+*/
   const items = [
     {
       label: "Unique Factor",
