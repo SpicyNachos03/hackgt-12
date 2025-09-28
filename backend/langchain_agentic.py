@@ -84,7 +84,7 @@ if __name__ == "__main__":
     out = check(
         drug="aspirin",
         allergies=["Tree Pollen"],
-        conditions=["Acute viral pharyngitis (disorder)", "Gingival disease (disorder)", "Otitis media (disorder)", "Streptococcal sore throat (disorder)"],
+        conditions=["Acute viral pharyngitis (disorder)"],
         ongoingMeds=[],
     )
     print(out.model_dump_json(indent=2))
