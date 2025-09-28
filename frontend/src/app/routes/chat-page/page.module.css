@@ -3,7 +3,7 @@
   background-color: #271E37; /* deep purple */
   padding: 2rem;
   border-radius: 1rem;
-  max-width: 500px; /* control width */
+  max-width: 900px; /* wider but not too wide */
   margin: 15% auto 3rem auto; /* vertical + horizontal centering */
   display: flex;
   flex-direction: column;
@@ -41,26 +41,30 @@
   width: 100%;
 }
 
-/* Red submit button */
+/* Purple submit button */
 .submitButtonInner {
-  background-color: #916ece; /* red */
+  background-color: #916ece;
   color: #fff;
   border: none;
   border-radius: 0.5rem;
   padding: 0.7rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
 }
 
-.redButton:hover {
-  background-color: #b71c1c; /* darker red on hover */
+.submitButtonInner:hover {
+  background-color: #7e5ad6;
 }
 
+.submitButtonInner:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
 
 /* Center the TabView content */
 .tabviewContainer {
-  max-width: 600px;
+  max-width: 900px; /* match wrapper width */
   margin: 2rem auto;
   text-align: center;
 }
@@ -70,4 +74,53 @@
   background-color: #f5f5f5; /* light gray input */
   border-radius: 0.5rem;
   padding: 0.5rem;
+}
+
+/* Error banners and field errors */
+.errorBanner {
+  background: #3b0d0d;
+  color: #ffd2d2;
+  border: 1px solid #8a2c2c;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 0 0 14px 0;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  width: 100%;
+}
+
+.fieldError {
+  color: #ffbaba;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Alternatives list styling */
+.altCard {
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  background-color: #0f0f14;
+  text-align: left; /* better readability */
+}
+
+.altCardTitle {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.altCardCitation {
+  font-size: 0.9em;
+  color: #9aa0a6;
+  font-style: italic;
+}
+
+/* Right-aligned bottom button row (kept single button) */
+.buttonRowRight {
+  padding-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+  max-width: 900px;
+  margin: 0 auto;
 }
