@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
+import xml.etree.ElementTree as ET
 
 load_dotenv()
 
@@ -78,6 +79,37 @@ def format_citation(s: Dict[str, Any]) -> str:
     pmid = s.get("uid") or s.get("articleids", [{}])[0].get("value") or ""
     return f"{author_str} {title}. {journal} ({pubdate}). PMID: {pmid}."
 
+
+def pubmed_first_authors_full(pmids: List[str]) -> Dict[str, str]:
+    """
+    Return {pmid: "First Last"} using EFetch XML AuthorList.
+    Falls back to initials if ForeName missing.
+    """
+    if not pmids:
+        return {}
+    params = {"db": "pubmed", "id": ",".join(pmids), "retmode": "xml"}
+    r = requests.get(EFETCH, params=params, timeout=20)
+    r.raise_for_status()
+    authors: Dict[str, str] = {}
+
+    root = ET.fromstring(r.text)
+    # XML structure: PubmedArticleSet/PubmedArticle/MedlineCitation/PMID, Article/AuthorList/Author[0]/ForeName, LastName
+    for art in root.findall(".//PubmedArticle"):
+        pmid_el = art.find(".//MedlineCitation/PMID")
+        pmid = pmid_el.text.strip() if pmid_el is not None else None
+        if not pmid:
+            continue
+        first_author = art.find(".//Article/AuthorList/Author")
+        if first_author is not None:
+            fore = (first_author.findtext("ForeName") or "").strip()
+            last = (first_author.findtext("LastName") or "").strip()
+            collab = (first_author.findtext("CollectiveName") or "").strip()
+            if collab:  # sometimes it's a group author
+                authors[pmid] = collab
+            elif fore or last:
+                authors[pmid] = f"{fore} {last}".strip()
+    return authors
+
 def build_article_bundle(pmids: List[str]) -> List[Dict[str, Any]]:
     summaries = pubmed_summaries(pmids)
     abstracts = pubmed_abstracts(pmids)
@@ -105,7 +137,7 @@ class Alternative(BaseModel):
     citation: str = Field(..., description="Concise citation for the key supporting article.")
 
 class AlternativesOut(BaseModel):
-    alternatives: List[Alternative] = Field(..., min_items=1, max_items=3)
+    alternatives: List[Alternative] = Field(..., min_items=1, max_items=4)
 
 SYSTEM = """You are a clinical literature scout. Read the provided PubMed article snippets.
 Task: suggest the most relevant alternative therapy to the clinician's problem.
