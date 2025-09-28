@@ -177,6 +177,48 @@ export default function ChatPage() {
           </div>
         )}
       </div>
+        
+=======
+                <InputText placeholder="Symptoms" />
+            </div>
+        </div>
+
+        <div style={{ marginTop: "20px", textAlign: "center" }}>
+        <Button 
+          label="Submit" 
+          className="p-button-rounded p-button-success"
+          onClick={handleSubmit}
+        />
+      </div>
+      {submittedData && (
+          <div style={{ marginTop: "20px", textAlign: "center" }}>
+            <h3>Submitted Data:</h3>
+            <pre>{JSON.stringify(submittedData, null, 2)}</pre>
+          </div>
+        )}
+        <TabView>
+        <TabPanel header="Header I">
+          <p className="m-0">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          </p>
+        </TabPanel>
+        <TabPanel header="Header II">
+          <p className="m-0">
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium...
+          </p>
+        </TabPanel>
+        <TabPanel header="Header III">
+          <p className="m-0">
+            At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium...
+          </p>
+        </TabPanel>
+      </TabView>
+
+      <ProgressBar value={value}></ProgressBar>
+      </div>
+        
+        </PrimeReactProvider>
+>>>>>>> 5ef4082 (input)
     </div>
   );
 }
