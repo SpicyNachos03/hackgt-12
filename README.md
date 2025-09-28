@@ -1,5 +1,11 @@
 # Clairvoyance
 
+## Team Members
+- Khoa Le
+- Joseph Nguyen
+- Lauren Lee
+- Daniel Laij
+  
 ## Inspiration
 Our project sprouted from deeply personal experiences that revealed the human cost behind every clinical decision. For one team member, watching his sister suffer through constant dermatologist visits where steroid after steroid was administered without a definitive cure left him frustrated. For another, the motivation stemmed from his mother's sudden fight with a life threatening fungal infection. He had to put college on hold in order to make long distance trips to stand by her hospital bed during her month long hospitalization.
 These experiences showcased a haunting reality: behind every delay and uncertainty, there is a life that hinges on informed decisions in a timely manner. This inspired us to address the knowledge gap that exists through the rapid evolution of medicine. Our mission became crystal clear: to empower HCPs with a functional agentic AI that continuously evaluates existing prescriptions against readily available pharmaceutical data. By focusing on prescription affirmation, we reduce uncertainty for physicians and prevent unnecessary patient visits. Furthermore, we develop relationship pipelines amongst doctors of different calibers as they investigate new cutting edge solutions. While many healthcare tools chase efficiency, our solution solidifies that concept without sacrificing the clarity and reinforces the human impact behind every decision.
