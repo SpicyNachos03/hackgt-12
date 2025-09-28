@@ -135,7 +135,7 @@ class Alternative(BaseModel):
     name: str = Field(..., description="Name of the recommended alternative drug.")
     description: str = Field(..., description="Why this is appropriate or better for the given issue, in 2-4 sentences.")
     citation: str = Field(..., description="Concise citation for the key supporting article.")
-    recommned_dosage: Optional[str] = Field(None, description="Recommended dosage if available.")
+    recommended_dosage: Optional[str] = Field(None, description="Recommended dosage if available.")
 
 class AlternativesOut(BaseModel):
     alternatives: List[Alternative] = Field(..., min_items=1, max_items=4)
