@@ -132,7 +132,7 @@ def build_article_bundle(pmids: List[str]) -> List[Dict[str, Any]]:
 # LLM schema & prompt
 # -----------------------
 class Alternative(BaseModel):
-    name: str = Field(..., description="Name of the recommended alternative (drug/class/therapy).")
+    name: str = Field(..., description="Name of the recommended alternative drug.")
     description: str = Field(..., description="Why this is appropriate or better for the given issue, in 2-4 sentences.")
     citation: str = Field(..., description="Concise citation for the key supporting article.")
 
@@ -140,7 +140,7 @@ class AlternativesOut(BaseModel):
     alternatives: List[Alternative] = Field(..., min_items=1, max_items=4)
 
 SYSTEM = """You are a clinical literature scout. Read the provided PubMed article snippets.
-Task: suggest the most relevant alternative therapy to the clinician's problem.
+Task: suggest the most relevant alternative drug to the clinician's problem.
 
 Constraints:
 - Base your suggestion ONLY on the provided articles.
@@ -217,9 +217,7 @@ def suggest_alternatives(
     out: AlternativesOut = (PROMPT | llm).invoke(inputs)
     return out
 
-# -----------------------
-# Example
-# -----------------------
+
 if __name__ == "__main__":
     result = suggest_alternatives(
         issue="The patient has a known allergy to aspirin, which is explicitly stated in the FDA label as a reason not to use the drug.",
