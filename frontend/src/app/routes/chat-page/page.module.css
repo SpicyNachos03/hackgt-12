@@ -1,0 +1,73 @@
+/* Wrapper for the form and submit button with purple background */
+.formWrapper {
+  background-color: #271E37; /* deep purple */
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 500px; /* control width */
+  margin: 15% auto 3rem auto; /* vertical + horizontal centering */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Container for the form inputs */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%; /* stretch inside wrapper */
+}
+
+/* Input group styling */
+.p-inputgroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* make inputs full width */
+}
+
+/* Adjust the addon to align at the top */
+.p-inputgroup-addon {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #fff; /* make numbers stand out on purple */
+}
+
+/* Center the submit button */
+.submitButton {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Red submit button */
+.submitButtonInner {
+  background-color: #916ece; /* red */
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.redButton:hover {
+  background-color: #b71c1c; /* darker red on hover */
+}
+
+
+/* Center the TabView content */
+.tabviewContainer {
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+/* Optional: make InputText and InputNumber fields stand out on purple */
+.p-inputgroup input {
+  background-color: #f5f5f5; /* light gray input */
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
