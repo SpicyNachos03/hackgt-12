@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState, Children, useRef, useLayoutEffect, HTMLAttributes, ReactNode, JSX } from 'react';
 import { motion, AnimatePresence, Variants } from 'motion/react';
+import { useRouter } from 'next/navigation';
 
 import './Stepper.css';
 
@@ -43,6 +46,8 @@ export default function Stepper({
   renderStepIndicator,
   ...rest
 }: StepperProps) {
+  const router = useRouter();
+
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
   const [direction, setDirection] = useState<number>(0);
   const stepsArray = Children.toArray(children);
@@ -76,6 +81,7 @@ export default function Stepper({
   const handleComplete = () => {
     setDirection(1);
     updateStep(totalSteps + 1);
+    router.push('/routes/chat-page'); // route to chat page
   };
 
   return (
@@ -135,7 +141,7 @@ export default function Stepper({
                 </button>
               )}
               <button onClick={isLastStep ? handleComplete : handleNext} className="next-button" {...nextButtonProps}>
-                {isLastStep ? 'Complete' : nextButtonText}
+                {isLastStep ? 'Try Now' : nextButtonText}
               </button>
             </div>
           </div>
