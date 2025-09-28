@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 1.25rem; /* was 1rem */
 }
 
 @media (min-width: 640px) {
@@ -24,15 +24,15 @@
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  max-width: 28rem;
-  border-radius: 2rem;
+  max-width: 35rem; /* was 28rem */
+  border-radius: 2.5rem; /* slightly larger */
 }
 
 .step-indicator-row {
   display: flex;
   width: 100%;
   align-items: center;
-  padding: 2rem;
+  padding: 2.5rem; /* was 2rem */
 }
 
 .step-content-default {
@@ -41,18 +41,18 @@
 }
 
 .step-default {
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 2.5rem; /* was 2rem */
+  padding-right: 2.5rem;
 }
 
 .footer-container {
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-bottom: 2rem;
+  padding-left: 2.5rem; /* was 2rem */
+  padding-right: 2.5rem;
+  padding-bottom: 2.5rem; /* was 2rem */
 }
 
 .footer-nav {
-  margin-top: 2.5rem;
+  margin-top: 3rem; /* was 2.5rem */
   display: flex;
 }
 
@@ -66,20 +66,10 @@
 
 .back-button {
   transition: all 350ms;
-  border-radius: 0.25rem;
-  padding: 0.25rem 0.5rem;
+  border-radius: 0.3125rem; /* was 0.25rem */
+  padding: 0.3125rem 0.625rem; /* was 0.25rem 0.5rem */
   color: #a3a3a3;
   cursor: pointer;
-}
-
-.back-button:hover {
-  color: #52525b;
-}
-
-.back-button.inactive {
-  pointer-events: none;
-  opacity: 0.5;
-  color: #a3a3a3;
 }
 
 .next-button {
@@ -92,28 +82,14 @@
   color: #060010;
   font-weight: 500;
   letter-spacing: -0.025em;
-  padding: 0.375rem 0.875rem;
+  padding: 0.5rem 1.1rem; /* was 0.375rem 0.875rem */
   cursor: pointer;
-}
-
-.next-button:hover {
-  background-color: rgba(171, 82, 255, 0.746);
-}
-
-.next-button:active {
-  background-color: rgba(171, 82, 255, 0.746);
-}
-
-.step-indicator {
-  position: relative;
-  cursor: pointer;
-  outline: none;
 }
 
 .step-indicator-inner {
   display: flex;
-  height: 2rem;
-  width: 2rem;
+  height: 2.5rem; /* was 2rem */
+  width: 2.5rem; /* was 2rem */
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
@@ -121,25 +97,40 @@
 }
 
 .active-dot {
-  height: 0.75rem;
-  width: 0.75rem;
+  height: 1rem; /* was 0.75rem */
+  width: 1rem;
   border-radius: 9999px;
   background-color: #060010;
 }
 
 .step-number {
-  font-size: 0.875rem;
+  font-size: 1.1rem; /* was 0.875rem */
 }
 
+.check-icon {
+  height: 1.25rem; /* was 1rem */
+  width: 1.25rem;
+  color: #000;
+}
+
+.step-default,
+.step-content-default,
+.footer-nav,
+.step-circle-container {
+  background-color: #000; /* Black backgrounds */
+  color: #fff; /* White text */
+}
+
+/* Thicker line and always-visible track */
 .step-connector {
   position: relative;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
-  height: 0.125rem;
+  height: 0.1875rem; /* was 0.125rem; ~+50% for visibility with larger dots */
   flex: 1;
   overflow: hidden;
   border-radius: 0.25rem;
-  background-color: rgba(171, 82, 255, 0.746);
+  background-color: rgba(171, 82, 255, 0.25); /* ← faint track always visible */
 }
 
 .step-connector-inner {
@@ -147,19 +138,6 @@
   left: 0;
   top: 0;
   height: 100%;
+  width: 0; /* start empty; animation will grow to 100% */
+  background-color: rgba(171, 82, 255, 0.746); /* progress color */
 }
-
-.check-icon {
-  height: 1rem;
-  width: 1rem;
-  color: #000;
-}
-
-.step-default,
-.step-content-default,
-.footer-nav,
-.step-circle-container  {
-  background-color: #000; /* Black backgrounds */
-  color: #fff; /* White text */
-}
-

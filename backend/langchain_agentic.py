@@ -23,7 +23,7 @@ def fetch_warn_prec(drug: str) -> Dict[str, Optional[str]]:
     
 
 class CompatibilityResult(BaseModel):
-    verdict: str = Field(..., pattern="^(PASS|WARN|FAIL)$")
+    verdict: str = Field(..., pattern="^(SAFE TO PROCEED|PROCEED WITH CAUTION|STRONGLY ADVISE AGAINST)$")
     reasons: List[str]
     evidence_quotes: List[str] = []
 
@@ -33,10 +33,10 @@ SYSTEM = """You are a STRICT drug compatibility judge.
 Given the text from the FDA label and your knowledge of the patient's allergies and conditions, determine if the proposed drug is compatible with the patient.
 
 Rules:
-- If text shows a hard restriction for a matched allergy/condition → FAIL
-- If text advises caution/monitoring/dose adjustment for a match → WARN
-- If neither section mentions any relevant match → PASS
-- If the verdict is either WARN or FAIL, explain in-depth why
+- If text shows a hard restriction for a matched allergy/condition → STRONGLY ADVISE AGAINST
+- If text advises caution/monitoring/dose adjustment for a match → PROCEED WITH CAUTION
+- If neither section mentions any relevant match → SAFE TO PROCEED
+- Regardless of the verdict, always provide 2-4 concise reasons explaining your decision.
 Output JSON with keys: verdict, reasons[], evidence_quotes[].
 """
 
@@ -83,8 +83,8 @@ def check(drug: str, allergies: List[str] | None = None, conditions: List[str] |
 if __name__ == "__main__":
     out = check(
         drug="aspirin",
-        allergies=["Tree Pollen"],
-        conditions=["Acute viral pharyngitis (disorder)"],
+        allergies=[],
+        conditions=["Scoliosis"],
         ongoingMeds=[],
     )
     print(out.model_dump_json(indent=2))

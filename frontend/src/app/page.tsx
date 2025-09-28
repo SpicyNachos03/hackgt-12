@@ -33,15 +33,14 @@ export default function Home() {
     },
   ];
   return (
-    <div style={{ padding: "20px", backgroundColor: "#f0f0f0", minHeight: "100vh" }}>
-      <a href="/api/auth/login">Login</a>
+    <div style={{ padding: "25px", backgroundColor: "#e3e3e3ff", minHeight: "100vh" }}>
       <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}>
         <LiquidEther
           colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
           mouseForce={20}
           cursorSize={100}
           isViscous={false}
-          viscous={30}
+          viscous={50}
           iterationsViscous={32}
           iterationsPoisson={32}
           resolution={0.5}
@@ -56,7 +55,7 @@ export default function Home() {
       </div>
 
       <CardNav
-        logo="/logo.png"
+        logo="/Clairvoyance.png"
         logoAlt="Company Logo"
         items={items}
         baseColor="#fff"
@@ -67,22 +66,75 @@ export default function Home() {
         postLoginRedirect="/routes/chat-page"
       />
 
-      <header style={{ textAlign: "center", marginBottom: "40px" }}>
-        <h1 style={{ fontSize: "3rem", marginTop: "25%" }}>Title</h1>
-        <p style={{ fontSize: "1.5rem", color: "#555", marginTop: "10px" }}>Slogan Slogan Slogan</p>
+      <header style={{ textAlign: "center", marginBottom: "10%" }}>
+        <h1 style={{ fontWeight: "900", fontSize: "10rem", marginTop: "25%", color: "#271E37" }}>Clairvoyance</h1>
+        <p style={{ fontSize: "1.5rem", color: "#555", marginTop: "10px" }}>Where New Knowledge Meets Old Knowledge</p>
       </header>
 
-      <div style={{ marginTop: "15%", display: "flex", gap: "30px", justifyContent: "center", flexWrap: "wrap" }}>
-        <SpotlightCard spotlightColor="rgba(132, 0, 255, 0.39)">
-          <p style={{ color: "#ffffff" }}>Main Purpose of This Here</p>
-        </SpotlightCard>
-        <SpotlightCard spotlightColor="rgba(132, 0, 255, 0.39)">
-          <p style={{ color: "#ffffff" }}>Picture of Something Here</p>
-        </SpotlightCard>
-        <SpotlightCard spotlightColor="rgba(132, 0, 255, 0.39)">
-          <p style={{ color: "#ffffff" }}>Unique Different Thing Here</p>
-        </SpotlightCard>
-      </div>
+<div
+  style={{
+    marginTop: "5%",
+    marginBottom: "40px",
+    display: "flex",
+    gap: "40px", // more spacing between cards
+    justifyContent: "center",
+    alignItems: "stretch",
+    flexWrap: "nowrap",
+    width: "100%",
+    maxWidth: "1600px", // 🔑 was 1200px, now wider
+    marginLeft: "auto",
+    marginRight: "auto",
+    padding: "0 40px", // padding inside container so text doesn’t hit edges
+  }}
+>
+  <SpotlightCard
+    spotlightColor="rgba(132, 0, 255, 0.39)"
+    styles={{
+      flex: "1 1 0",
+      minWidth: "450px", // 🔑 gives each card more width
+      padding: "24px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+    }}
+  >
+    <p style={{ color: "#ffffff" }}>
+      Our core mission is to solve the knowledge gap where experienced doctors may struggle to keep pace with rapidly evolving medication research compared to newer providers. Closing this gap is vital to ensure every patient receives care informed by the latest medical evidence, regardless of their doctor’s career stage.
+    </p>
+  </SpotlightCard>
+
+  <SpotlightCard
+    spotlightColor="rgba(132, 0, 255, 0.39)"
+    style={{
+      flex: "1 1 0",
+      minWidth: "450px",
+      padding: "24px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+    }}
+  >
+    <p style={{ color: "#ffffff" }}>
+      Our agentic AI keeps HCPs current by comparing existing prescriptions with the latest drug data, highlighting compatibility issues and surfacing newer, evidence-backed alternatives. This ensures providers always know whether a patient’s treatment plan can be improved with safer or more effective options.
+    </p>
+  </SpotlightCard>
+
+  <SpotlightCard
+    spotlightColor="rgba(132, 0, 255, 0.39)"
+    style={{
+      flex: "1 1 0",
+      minWidth: "450px",
+      padding: "24px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+    }}
+  >
+    <p style={{ color: "#ffffff" }}>
+      Our solution stands apart by focusing on prescription affirmation, reducing uncertainty for doctors and freeing patients from unnecessary visits. While other health tech tools chase efficiency, we deliver confidence and clarity in care.
+    </p>
+  </SpotlightCard>
+</div>
 
       <Stepper
         initialStep={1}
@@ -92,13 +144,14 @@ export default function Home() {
         onFinalStepCompleted={() => console.log("All steps completed!")}
         backButtonText="Previous"
         nextButtonText="Next"
+        style={{ paddingBottom: "250px" }}
       >
         <Step>
-          <h2>Welcome to the React Bits stepper!</h2>
-          <p>Check out the next step!</p>
+          <h2>Welcome to Clairvoyance!</h2>
+          <p>Click the arrow to learn more!</p>
         </Step>
         <Step>
-          <h2>Step 2</h2>
+          <h2>Struggling to diagnose your patients properly?</h2>
           <img
             style={{
               height: "100px",
@@ -108,17 +161,18 @@ export default function Home() {
               borderRadius: "15px",
               marginTop: "1em",
             }}
-            src="https://www.purrfectcatgifts.co.uk/cdn/shop/collections/Funny_Cat_Cards_640x640.png?v=1663150894"
+            src="/doctorpatient.png"
           />
-          <p>Custom step content!</p>
+
+          <p style={{ paddingTop: '20px' }}>Utilize our Agentic AI to help diagnose your patients better!</p>
         </Step>
         <Step>
-          <h2>How about an input?</h2>
-          <input placeholder="Your name?" />
+          <h2>How do I use it?</h2>
+          <p>Simply enter in your patient's symptoms, your diagnosis, and their information!</p>
         </Step>
         <Step>
-          <h2>Final Step</h2>
-          <p>You made it!</p>
+          <h2>Want to try it out?</h2>
+          <p>Click the button to try it out yourself?</p>
         </Step>
       </Stepper>
     </div>
