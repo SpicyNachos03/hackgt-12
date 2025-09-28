@@ -141,7 +141,9 @@ class AlternativesOut(BaseModel):
     alternatives: List[Alternative] = Field(..., min_items=1, max_items=4)
 
 SYSTEM = """You are a clinical literature scout. Read the provided PubMed article snippets.
+
 Task: suggest the most relevant and specific alternative drug to the clinician's problem.
+
 
 Constraints:
 - Base your suggestion ONLY on the provided articles.
