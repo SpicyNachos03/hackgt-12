@@ -82,9 +82,9 @@ def check(drug: str, allergies: List[str] | None = None, conditions: List[str] |
 
 if __name__ == "__main__":
     out = check(
-        drug="midazolam",
-        allergies=[],
-        conditions=["asthma"],
+        drug="aspirin",
+        allergies=["Tree Pollen"],
+        conditions=["Acute viral pharyngitis (disorder)", "Gingival disease (disorder)", "Otitis media (disorder)", "Streptococcal sore throat (disorder)"],
         ongoingMeds=[],
     )
     print(out.model_dump_json(indent=2))
