@@ -54,7 +54,7 @@ PROMPT = ChatPromptTemplate.from_messages([
     ),
 ])
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0).with_structured_output(CompatibilityResult)
+llm = ChatOpenAI(model="gpt-5", temperature=0).with_structured_output(CompatibilityResult)
 
 # Chain:
 #   1) grab warn/prec via tool
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     out = check(
         drug="aspirin",
         allergies=["Tree Pollen"],
-        conditions=["Acute viral pharyngitis (disorder)", "Gingival disease (disorder)", "Otitis media (disorder)", "Streptococcal sore throat (disorder)"],
+        conditions=["Acute viral pharyngitis (disorder)"],
         ongoingMeds=[],
     )
     print(out.model_dump_json(indent=2))
