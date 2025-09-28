@@ -149,17 +149,6 @@ def create_app():
             }), 500    
     # Error handlers
 
-
-
-
-
-
-
-
-
-
-
-
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({'error': 'Endpoint not found'}), 404
