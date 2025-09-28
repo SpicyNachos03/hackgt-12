@@ -1,126 +1,167 @@
-/* Wrapper for the form and submit button with purple background */
+/* Wrapper for the form, submit button, and results — keeps everything together & centered */
 .formWrapper {
   background-color: #271E37; /* deep purple */
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: 1rem;
-  max-width: 900px; /* wider but not too wide */
-  margin: 15% auto 3rem auto; /* vertical + horizontal centering */
+  max-width: 900px;
+  margin: 10% auto 3rem auto; /* centered */
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  color: #ffffff; /* default text color */
+  font-size: 1.1rem; /* larger base font */
+  line-height: 1.65;
 }
 
 /* Container for the form inputs */
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  width: 100%; /* stretch inside wrapper */
+  gap: 1.2rem;
+  width: 100%;
 }
 
 /* Input group styling */
 .p-inputgroup {
   display: flex;
   flex-direction: column;
-  width: 100%; /* make inputs full width */
+  width: 100%;
 }
 
-/* Adjust the addon to align at the top */
+/* Addon numbers */
 .p-inputgroup-addon {
   margin-bottom: 0.5rem;
   font-weight: bold;
-  color: #fff; /* make numbers stand out on purple */
+  color: #ffffff;
+  font-size: 1rem;
 }
 
-/* Center the submit button */
+/* Inputs: high contrast */
+.p-inputgroup input {
+  background-color: #ffffff; /* pure white */
+  color: #1a1a1a;            /* dark text */
+  border: 1px solid #ccc;
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.8rem;
+  font-size: 1rem;
+}
+
+.p-inputgroup input:focus {
+  border-color: #a98af0;
+  box-shadow: 0 0 0 3px rgba(169, 138, 240, 0.25);
+  outline: none;
+}
+
+/* Submit buttons */
 .submitButton {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-/* Purple submit button */
 .submitButtonInner {
-  background-color: #916ece;
-  color: #fff;
+  background-color: #8c74e6;
+  color: #ffffff;
   border: none;
-  border-radius: 0.5rem;
-  padding: 0.7rem 1.5rem;
-  font-size: 1rem;
+  border-radius: 9999px;
+  padding: 0.9rem 1.8rem;
+  font-size: 1.05rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  transition: background-color 0.2s ease, transform 0.12s ease;
 }
 
 .submitButtonInner:hover {
-  background-color: #7e5ad6;
+  background-color: #7b61e0;
 }
 
 .submitButtonInner:disabled {
   cursor: not-allowed;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
-/* Center the TabView content */
+/* TabView area */
 .tabviewContainer {
-  max-width: 900px; /* match wrapper width */
-  margin: 2rem auto;
-  text-align: center;
-}
-
-/* Optional: make InputText and InputNumber fields stand out on purple */
-.p-inputgroup input {
-  background-color: #f5f5f5; /* light gray input */
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-}
-
-/* Error banners and field errors */
-.errorBanner {
-  background: #3b0d0d;
-  color: #ffd2d2;
-  border: 1px solid #8a2c2c;
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin: 0 0 14px 0;
-  line-height: 1.4;
-  white-space: pre-wrap;
+  max-width: 900px;
   width: 100%;
+  text-align: left;
 }
 
-.fieldError {
-  color: #ffbaba;
-  font-size: 12px;
-  margin-top: 4px;
+.tabviewContainer p,
+.tabviewContainer li,
+.tabviewContainer strong,
+.tabviewContainer em {
+  color: black; /* full white text */
+  font-size: 1.05rem;
+  line-height: 1.7;
 }
 
-/* Alternatives list styling */
-.altCard {
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  padding: 12px;
-  margin: 8px 0;
-  background-color: #0f0f14;
-  text-align: left; /* better readability */
+.tabviewContainer ul {
+  padding-left: 1.4rem;
+  margin-top: 0.5rem;
 }
 
-.altCardTitle {
-  font-weight: 700;
-  margin-bottom: 8px;
+.tabviewContainer li + li {
+  margin-top: 0.4rem;
+}
+
+/* Error banners */
+.errorBanner {
+  background: #5a1a1a;
+  color: #ffeaea;
+  border: 1px solid #b33a3a;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-weight: 600;
+}
+
+/* Alternatives tabs */
+.altTabs {
+  margin-top: 1rem;
+}
+
+.altPane {
+  background: #1f1730;
+  border: 1px solid #4a3a70;
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.altBody {
+  color: #ffffff;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.altDosage {
+  margin-top: 10px;
+  color: white; /* yellowish highlight for dosage */
+  font-weight: 600;
 }
 
 .altCardCitation {
-  font-size: 0.9em;
-  color: #9aa0a6;
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: white;
   font-style: italic;
 }
 
-/* Right-aligned bottom button row (kept single button) */
-.buttonRowRight {
-  padding-top: 30px;
+/* Fallback JSON */
+.altJson {
+  background: #0f0f14;
+  color: #ffffff;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 0.95rem;
+  overflow-x: auto;
+}
+
+/* Center the action button */
+.resultsActionRow {
   display: flex;
-  justify-content: flex-end;
-  max-width: 900px;
-  margin: 0 auto;
+  justify-content: center;
+  margin: 1rem 0;
 }
