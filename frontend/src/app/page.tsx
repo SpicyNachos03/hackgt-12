@@ -1,29 +1,11 @@
 "use client";
-
 import Image from "next/image";
 import CardNav from "../components/CardNav";
 import SpotlightCard from "../components/SpotlightCard";
 import Stepper, { Step } from "../components/Stepper";
 import LiquidEther from "../components/LiquidEther";
 import { GoArrowUpRight } from "react-icons/go";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-// ✅ Auth0 session hook
-import { useUser } from "@auth0/nextjs-auth0";
-
 export default function Home() {
-  const router = useRouter();
-  const { user, isLoading, error } = useUser();
-
-  /*
-  // Redirect authenticated users straight to chat page
-  useEffect(() => {
-    if (user) {
-      router.replace("/routes/chat-page");
-    }
-  }, [user, router]);
-*/
   const items = [
     {
       label: "Unique Factor",
@@ -50,18 +32,9 @@ export default function Home() {
       ],
     },
   ];
-
-  if (isLoading) {
-    return <div style={{ padding: 20 }}>Loading...</div>;
-  }
-
-  if (error) {
-    return <div style={{ padding: 20, color: "crimson" }}>{error.message}</div>;
-  }
-
-  // If user is authenticated, the effect will redirect, so no need to render further UI
   return (
     <div style={{ padding: "20px", backgroundColor: "#f0f0f0", minHeight: "100vh" }}>
+      <a href="/api/auth/login">Login</a>
       <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}>
         <LiquidEther
           colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
@@ -91,6 +64,7 @@ export default function Home() {
         buttonBgColor="#111"
         buttonTextColor="#fff"
         ease="power3.out"
+        postLoginRedirect="/routes/chat-page"
       />
 
       <header style={{ textAlign: "center", marginBottom: "40px" }}>

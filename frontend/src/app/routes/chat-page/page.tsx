@@ -1,16 +1,17 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import { CedarCaptionChat } from "../../../cedar/components/chatComponents/CedarCaptionChat";
 import { TabView, TabPanel } from "primereact/tabview";
 import "primereact/resources/themes/tailwind-light/theme.css";
 
+
 export default function ChatPage() {
   const router = useRouter();
-
   return (
     <div>
-
+    <button onClick={() => window.location.href = '/auth/logout'}>
+      Logout
+    </button>
       <TabView>
         <TabPanel header="Header I">
           <p className="m-0">
