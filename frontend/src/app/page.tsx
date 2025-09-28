@@ -33,14 +33,14 @@ export default function Home() {
     },
   ];
   return (
-    <div style={{ padding: "25px", backgroundColor: "#f0f0f0", minHeight: "100vh" }}>
+    <div style={{ padding: "25px", backgroundColor: "#e3e3e3ff", minHeight: "100vh" }}>
       <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}>
         <LiquidEther
           colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
           mouseForce={20}
           cursorSize={100}
           isViscous={false}
-          viscous={30}
+          viscous={50}
           iterationsViscous={32}
           iterationsPoisson={32}
           resolution={0.5}
@@ -66,8 +66,8 @@ export default function Home() {
         postLoginRedirect="/routes/chat-page"
       />
 
-      <header style={{ textAlign: "center", marginBottom: "40px" }}>
-        <h1 style={{ fontSize: "3rem", marginTop: "25%" }}>Clairvoyance</h1>
+      <header style={{ textAlign: "center", marginBottom: "10%" }}>
+        <h1 style={{ fontWeight: "900", fontSize: "10rem", marginTop: "25%", color: "#271E37" }}>Clairvoyance</h1>
         <p style={{ fontSize: "1.5rem", color: "#555", marginTop: "10px" }}>Where New Knowledge Meets Old Knowledge</p>
       </header>
 
@@ -89,7 +89,7 @@ export default function Home() {
 >
   <SpotlightCard
     spotlightColor="rgba(132, 0, 255, 0.39)"
-    style={{
+    styles={{
       flex: "1 1 0",
       minWidth: "450px", // 🔑 gives each card more width
       padding: "24px",
