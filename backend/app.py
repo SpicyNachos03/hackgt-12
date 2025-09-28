@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
+import pandas as pd
 from langchain_agentic import check
 from research_agent import suggest_alternatives
 
@@ -13,7 +14,16 @@ def create_app():
     # Basic configuration
     app.config['DEBUG'] = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-    
+
+    #load in mastercsv
+    user_path_info = os.path.join(os.path.dirname(__file__), 'patientData.csv')
+    try:
+        user_info_df = pd.read_csv(user_path_info)
+        print(f"The user data loading worked {user_path_info}")
+    except FileNotFoundError:
+        print(f"We have an issue, the user data CSV was not found at {user_path_info}. Our user endpoint fails.")
+        user_info_df = pd.DataFrame()
+
     # Health check endpoint
     @app.route('/health', methods=['GET'])
     def health_check():
@@ -149,15 +159,28 @@ def create_app():
             }), 500    
     # Error handlers
 
-
-
-
-
-
-
-
-
-
+    #user api
+    @app.route('/api/user', methods=['GET']) 
+    def user_grab():  
+        """
+        Obtains the user identification, userID
+        Performs a quick lookup in the mastercsv file
+        Example: /api/user?id=1
+        """
+        user_id = request.args.get('id', '').strip()
+        if not user_id:
+            return jsonify({'ok': False, 'error': "Missing required query parameter 'id'"}), 400
+        #if for some reason df is empty
+        if user_info_df.empty:
+            return jsonify({'ok': False, 'error': 'User data is not loaded on the server.'}), 500
+        #print(user_id)
+        #access the row given the requested userID
+        obtained_df = user_info_df[user_info_df['Patient_ID'] == user_id]
+        if not obtained_df.empty:
+                user_data = obtained_df.to_dict('records')[0]
+                return jsonify({'ok': True, 'user': user_data}), 200
+        else:
+                return jsonify({'ok': False, 'error': f'User with id "{user_id}" not found'}), 404
 
 
     @app.errorhandler(404)
