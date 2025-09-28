@@ -165,6 +165,7 @@ export default function ChatPage() {
   };
 
   // ---------------- Research alternatives ----------------
+  // Backend expects: current_option (required), issue (optional), search_hint (optional)
   const handleRecommendation = async () => {
     resetErrors();
     if (!validateForRecommendations()) {
@@ -236,6 +237,11 @@ export default function ChatPage() {
   const FieldError = ({ message }: { message?: string }) =>
     !message ? null : <div className={styles.fieldError}>{message}</div>;
 
+  // Build Alternative tabs
+  const alternativeTabs = Array.isArray(recData?.result?.alternatives)
+    ? recData.result.alternatives
+    : [];
+
   return (
     <div>
       <CardNav
@@ -249,11 +255,12 @@ export default function ChatPage() {
         ease="power3.out"
       />
 
-      {/* Centered, width-controlled container */}
+      {/* Entire screen content container */}
       <div className={styles.formWrapper}>
         {/* Global form error */}
         <ErrorBanner message={formError} />
 
+        {/* Inputs */}
         <div className={styles.formContainer}>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">1.</span>
@@ -289,7 +296,7 @@ export default function ChatPage() {
           <FieldError message={fieldErrors.symptoms} />
         </div>
 
-        {/* Submit only */}
+        {/* Submit */}
         <div className={styles.submitButton}>
           <button
             onClick={handleSubmit}
@@ -302,136 +309,136 @@ export default function ChatPage() {
             {compatLoading ? "Submitting…" : "Submit"}
           </button>
         </div>
-      </div>
 
-      {(submittedData || recData || compatError || recError) && (
-        <>
-          <div className={styles.tabviewContainer}>
-            <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
-              <TabPanel header="Input">
-                <ErrorBanner message={compatError} />
-                <p>
-                  <strong>Drug:</strong> {submittedData?.input?.drug || drugs || "N/A"}
-                </p>
-                <p>
-                  <strong>Conditions:</strong>{" "}
-                  {submittedData?.input?.conditions?.length
-                    ? submittedData.input.conditions.join(", ")
-                    : symptoms || "None"}
-                </p>
-                <p>
-                  <strong>Allergies:</strong>{" "}
-                  {submittedData?.input?.allergies?.length
-                    ? submittedData.input.allergies.join(", ")
-                    : "None"}
-                </p>
-                <p>
-                  <strong>Ongoing Medications:</strong>{" "}
-                  {submittedData?.input?.ongoingMeds?.length
-                    ? submittedData.input.ongoingMeds.join(", ")
-                    : "None"}
-                </p>
-              </TabPanel>
+        {/* Results (kept inside the SAME container for cohesion) */}
+        {(submittedData || recData || compatError || recError) && (
+          <>
+            <div className={styles.tabviewContainer}>
+              <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
+                <TabPanel header="Input">
+                  <ErrorBanner message={compatError} />
+                  <p>
+                    <strong>Drug:</strong> {submittedData?.input?.drug || drugs || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Conditions:</strong>{" "}
+                    {submittedData?.input?.conditions?.length
+                      ? submittedData.input.conditions.join(", ")
+                      : symptoms || "None"}
+                  </p>
+                  <p>
+                    <strong>Allergies:</strong>{" "}
+                    {submittedData?.input?.allergies?.length
+                      ? submittedData.input.allergies.join(", ")
+                      : "None"}
+                  </p>
+                  <p>
+                    <strong>Ongoing Medications:</strong>{" "}
+                    {submittedData?.input?.ongoingMeds?.length
+                      ? submittedData.input.ongoingMeds.join(", ")
+                      : "None"}
+                  </p>
+                </TabPanel>
 
-              <TabPanel header="Evidence">
-                <ErrorBanner message={compatError} />
-                <ul>
-                  {submittedData?.result?.evidence_quotes?.map((quote: string, i: number) => (
-                    <li key={i}>{quote}</li>
-                  ))}
-                </ul>
-                {!submittedData?.result?.evidence_quotes?.length && (
-                  <p>No evidence quotes available.</p>
-                )}
-              </TabPanel>
+                <TabPanel header="Evidence">
+                  <ErrorBanner message={compatError} />
+                  <ul>
+                    {submittedData?.result?.evidence_quotes?.map((quote: string, i: number) => (
+                      <li key={i}>{quote}</li>
+                    ))}
+                  </ul>
+                  {!submittedData?.result?.evidence_quotes?.length && (
+                    <p>No evidence quotes available.</p>
+                  )}
+                </TabPanel>
 
-              <TabPanel header="Reasons">
-                <ErrorBanner message={compatError} />
-                <ul>
-                  {submittedData?.result?.reasons?.map((reason: string, i: number) => (
-                    <li key={i}>{reason}</li>
-                  ))}
-                </ul>
-                {!submittedData?.result?.reasons?.length && <p>No reasons returned.</p>}
-              </TabPanel>
+                <TabPanel header="Reasons">
+                  <ErrorBanner message={compatError} />
+                  <ul>
+                    {submittedData?.result?.reasons?.map((reason: string, i: number) => (
+                      <li key={i}>{reason}</li>
+                    ))}
+                  </ul>
+                  {!submittedData?.result?.reasons?.length && <p>No reasons returned.</p>}
+                </TabPanel>
 
-              <TabPanel header="Verdict">
-                <ErrorBanner message={compatError} />
-                <p>
-                  <strong>{submittedData?.result?.verdict || "N/A"}</strong>
-                </p>
-              </TabPanel>
+                <TabPanel header="Verdict">
+                  <ErrorBanner message={compatError} />
+                  <p>
+                    <strong>{submittedData?.result?.verdict || "N/A"}</strong>
+                  </p>
+                </TabPanel>
 
-              <TabPanel header="Alternatives">
-                <ErrorBanner message={recError} />
-                {recLoading && <p>Loading alternatives…</p>}
+                {/* Alternatives: contains its OWN inner tabview per drug/class */}
+                <TabPanel header="Alternatives">
+                  <ErrorBanner message={recError} />
 
-                {!recLoading && !recError && !recData && (
-                  <p>No recommendations yet. Click “Further Recommendations”.</p>
-                )}
-
-                {!recLoading && !recError && recData && (
-                  <div>
-                    <div>
-                      <strong>Inputs</strong>
-                      <div><em>Current Option:</em> {recData.input?.current_option || "N/A"}</div>
-                      <div><em>Issue:</em> {recData.input?.issue || "N/A"}</div>
-                      <div><em>Search Hint:</em> {recData.input?.search_hint || "N/A"}</div>
-                    </div>
-
-                    {Array.isArray(recData.result?.alternatives) && recData.result.alternatives.length > 0 ? (
-                      <div>
-                        <strong>🔬 Research-Based Alternatives</strong>
-                        {recData.result.alternatives.map((alt: any, idx: number) => (
-                          <div key={idx} className={styles.altCard}>
-                            <div className={styles.altCardTitle}>
-                              {alt.name || `Alternative ${idx + 1}`}
-                            </div>
-                            <div>
-                              {alt.description || "No description available"}
-                            </div>
-                            {alt.citation && (
-                              <div className={styles.altCardCitation}>
-                                📖 {alt.citation}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      !recLoading &&
-                      !recError && <p>No alternatives returned from the service.</p>
-                    )}
-
-                    {!recLoading &&
-                      !recError &&
-                      recData &&
-                      !Array.isArray(recData.result?.alternatives) && (
-                        <pre>
-                          {JSON.stringify(recData.result ?? recData, null, 2)}
-                        </pre>
-                      )}
+                  <div className={styles.resultsActionRow}>
+                    <button
+                      onClick={handleRecommendation}
+                      className={styles.submitButtonInner}
+                      disabled={recLoading}
+                      aria-busy={recLoading}
+                      aria-disabled={recLoading}
+                      title={recLoading ? "Searching..." : "Get alternatives"}
+                    >
+                      {recLoading ? "Searching Alternatives…" : "Find Alternatives"}
+                    </button>
                   </div>
-                )}
-              </TabPanel>
-            </TabView>
-          </div>
 
-          {/* Single bottom button, styled via CSS and aligned with centered container */}
-          <div className={styles.buttonRowRight}>
-            <button
-              onClick={handleRecommendation}
-              className={styles.submitButtonInner}
-              disabled={recLoading}
-              aria-busy={recLoading}
-              aria-disabled={recLoading}
-              title={recLoading ? "Searching..." : "Get alternatives"}
-            >
-              {recLoading ? "Searching Alternatives…" : "Further Recommendations"}
-            </button>
-          </div>
-        </>
-      )}
+                  {recLoading && <p>Loading alternatives…</p>}
+
+                  {!recLoading && !recError && !recData && (
+                    <p>No recommendations yet. Click “Find Alternatives”.</p>
+                  )}
+
+                  {!recLoading && !recError && alternativeTabs.length > 0 && (
+                    <div className={styles.altTabs}>
+                      <TabView>
+                        {alternativeTabs.map((alt: any, idx: number) => (
+                          <TabPanel key={idx} header={alt.name || `Alternative ${idx + 1}`}>
+                            <div className={styles.altPane}>
+                              <div className={styles.altBody}>
+                                {alt.description || "No description available"}
+                              </div>
+
+                              {/* NEW: dosage line if present */}
+                              {alt.recommended_dosage && (
+                                <div className={styles.altDosage}>
+                                  Recommended dosage: {alt.recommended_dosage}
+                                </div>
+                              )}
+
+                              {alt.citation && (
+                                <div className={styles.altCardCitation}>
+                                  📖 {alt.citation}
+                                </div>
+                              )}
+                            </div>
+                          </TabPanel>
+                        ))}
+                      </TabView>
+                    </div>
+                  )}
+
+                  {!recLoading && !recError && recData && alternativeTabs.length === 0 && (
+                    <p>No alternatives returned from the service.</p>
+                  )}
+
+                  {!recLoading &&
+                    !recError &&
+                    recData &&
+                    !Array.isArray(recData.result?.alternatives) && (
+                      <pre className={styles.altJson}>
+                        {JSON.stringify(recData.result ?? recData, null, 2)}
+                      </pre>
+                    )}
+                </TabPanel>
+              </TabView>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
