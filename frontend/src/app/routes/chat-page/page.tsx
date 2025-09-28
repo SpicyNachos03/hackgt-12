@@ -74,7 +74,7 @@ export default function ChatPage() {
   return (
     <div>
       <CardNav
-        logo="/logo.png"
+        logo="/Clairvoyance.png"
         logoAlt="Company Logo"
         items={items}
         baseColor="#fff"
