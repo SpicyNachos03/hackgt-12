@@ -1,14 +1,33 @@
 "use client";
 
+import React, { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import React, { useMemo, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { TabView, TabPanel } from "primereact/tabview";
-//import { Button } from "primereact/button";
 import CardNav from "../../../components/CardNav";
 import styles from "./page.module.css";
 import "primereact/resources/themes/md-light-deeppurple/theme.css";
+
+// ---------- Small utilities ----------
+function toList(x: unknown): string[] {
+  if (x === null || x === undefined) return [];
+  if (Array.isArray(x)) return x.map(String).map((s) => s.trim()).filter(Boolean);
+  if (typeof x === "string") return x.split(",").map((s) => s.trim()).filter(Boolean);
+  return [String(x)].filter(Boolean);
+}
+function dedupePreserveOrder(arr: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const s of arr) {
+    const key = s.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push(s);
+    }
+  }
+  return out;
+}
 
 export default function ChatPage() {
   const router = useRouter();
@@ -18,48 +37,29 @@ export default function ChatPage() {
   const [drugs, setDrugs] = useState<string>("");
   const [symptoms, setSymptoms] = useState<string>("");
 
-  // Form-level and field-level errors
+  // Errors
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ drugs?: string; symptoms?: string }>({});
 
-  // Compatibility API state
+  // API state
   const [submittedData, setSubmittedData] = useState<any>(null);
   const [compatLoading, setCompatLoading] = useState<boolean>(false);
   const [compatError, setCompatError] = useState<string | null>(null);
 
-  // Research/Alternatives API state
   const [recData, setRecData] = useState<any>(null);
   const [recLoading, setRecLoading] = useState<boolean>(false);
   const [recError, setRecError] = useState<string | null>(null);
 
-  // Tabs: 0=Input, 1=Evidence, 2=Reasons, 3=Verdict, 4=Alternatives
+  // Patient data (fetched when patientId changes)
+  const [patientData, setPatientData] = useState<any>(null);
+
+  // Tabs
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   const items = [
-    {
-      label: "Unique Factor",
-      bgColor: "#0D0716",
-      textColor: "#fff",
-      links: [{ label: "Chat page", href: "./routes/chat-page", ariaLabel: "Chat page" }],
-    },
-    {
-      label: "Tutorials",
-      bgColor: "#170D27",
-      textColor: "#fff",
-      links: [
-        { label: "Sample Cases", href: "google.com", ariaLabel: "Sample Cases" },
-        { label: "Step-By-Step", href: "google.com", ariaLabel: "Step by Step" },
-      ],
-    },
-    {
-      label: "Settings",
-      bgColor: "#271E37",
-      textColor: "#fff",
-      links: [
-        { label: "Docs", href: "google.com", ariaLabel: "Docs" },
-        { label: "Contact Us", href: "google.com", ariaLabel: "Step by Step" },
-      ],
-    },
+    { label: "Unique Factor", bgColor: "#0D0716", textColor: "#fff", links: [{ label: "Chat page", href: "./routes/chat-page", ariaLabel: "Chat page" }] },
+    { label: "Tutorials", bgColor: "#170D27", textColor: "#fff", links: [{ label: "Sample Cases", href: "google.com", ariaLabel: "Sample Cases" }, { label: "Step-By-Step", href: "google.com", ariaLabel: "Step by Step" }] },
+    { label: "Settings", bgColor: "#271E37", textColor: "#fff", links: [{ label: "Docs", href: "google.com", ariaLabel: "Docs" }, { label: "Contact Us", href: "google.com", ariaLabel: "Step by Step" }] },
   ];
 
   // ----------- Helpers -----------
@@ -74,7 +74,6 @@ export default function ChatPage() {
     setCompatError(null);
     setRecError(null);
   }
-
   function validateForCompatibility(): boolean {
     const errs: typeof fieldErrors = {};
     if (!trimmedDrugs && !trimmedSymptoms) {
@@ -84,12 +83,9 @@ export default function ChatPage() {
     setFieldErrors(errs);
     return true;
   }
-
   function validateForRecommendations(): boolean {
     const errs: typeof fieldErrors = {};
-    if (!trimmedDrugs) {
-      errs.drugs = "Drug is required to fetch alternatives.";
-    }
+    if (!trimmedDrugs) errs.drugs = "Drug is required to fetch alternatives.";
     setFieldErrors(errs);
     if (Object.keys(errs).length > 0) {
       setFormError("Please fix the highlighted fields.");
@@ -110,25 +106,61 @@ export default function ChatPage() {
     }
   }
 
+  // ---------------- Patient auto-fetch when ID changes (debounced) ----------------
+  useEffect(() => {
+    let timer: any;
+    const run = async () => {
+      if (patientId == null) {
+        setPatientData(null);
+        return;
+      }
+      const url = `http://localhost:5001/api/user?id=${encodeURIComponent(String(patientId))}`;
+      try {
+        const res = await fetchWithTimeout(url, { method: "GET", headers: { Accept: "application/json" } }, 10000);
+        const raw = await res.text().catch(() => "");
+        if (!res.ok) {
+          console.warn("[patient] non-OK", res.status, raw.slice(0, 200));
+          setPatientData(null);
+          return;
+        }
+        let parsed: any = null;
+        try {
+          parsed = raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          console.warn("[patient] JSON parse failed", e);
+        }
+        setPatientData(parsed); // contains { ok: true, user: {...} }
+        console.log("[patient] loaded:", parsed);
+      } catch (e: any) {
+        console.warn("[patient] fetch error:", e?.message || e);
+        setPatientData(null);
+      }
+    };
+    timer = setTimeout(run, 400); // debounce 400ms
+    return () => clearTimeout(timer);
+  }, [patientId]);
+
+  // ---------- Derived variables from patientData (not shown in the form) ----------
+  const patientConditions = useMemo(() => toList(patientData?.user?.Conditions), [patientData]);
+  const patientAllergies  = useMemo(() => toList(patientData?.user?.Allergies), [patientData]);
+  const patientMeds       = useMemo(() => toList(patientData?.user?.Active_Medications), [patientData]);
+
   // ---------------- Compatibility check ----------------
   const handleSubmit = async () => {
     resetErrors();
-    if (!validateForCompatibility()) {
-      return;
-    }
-    if (!hasNetwork) {
-      setCompatError("No network connection detected.");
-      return;
-    }
+    if (!validateForCompatibility()) return;
+    if (!hasNetwork) { setCompatError("No network connection detected."); return; }
 
-    const formatList = (input: string) =>
-      input ? input.split(",").map((s) => s.trim()).filter(Boolean).join(",") : "";
-
-    const queryParams = new URLSearchParams({
+    // Merge patient Conditions + typed Symptoms (Allergies & Meds come ONLY from patient)
+    const mergedConditions = dedupePreserveOrder([...patientConditions, ...toList(trimmedSymptoms)]);
+    const mergedAllergies  = patientAllergies; // from patient only
+    const mergedMeds       = patientMeds;      // from patient only
+  
+    const qs = new URLSearchParams({
       drug: trimmedDrugs,
-      allergies: "",
-      conditions: formatList(trimmedSymptoms),
-      ongoingMeds: "",
+      allergies: mergedAllergies.join(","),   // not shown in form, but included in query
+      conditions: mergedConditions.join(","),
+      ongoingMeds: mergedMeds.join(","),
     });
 
     setCompatLoading(true);
@@ -137,23 +169,18 @@ export default function ChatPage() {
 
     try {
       const res = await fetchWithTimeout(
-        `http://localhost:5001/api/compatibility?${queryParams.toString()}`,
+        `http://localhost:5001/api/compatibility?${qs.toString()}`,
         { method: "GET", headers: { "Content-Type": "application/json" } },
         20000
       );
-
+      console.log(`http://localhost:5001/api/compatibility?${qs.toString()}`)
       if (!res.ok) {
         const text = await res.text().catch(() => "");
         throw new Error(`Compatibility request failed (${res.status}). ${text || ""}`.trim());
       }
 
-      const data = await res.json().catch(() => {
-        throw new Error("Failed to parse compatibility JSON.");
-      });
-
-      if (!data || typeof data !== "object") {
-        throw new Error("Unexpected compatibility response format.");
-      }
+      const data = await res.json().catch(() => { throw new Error("Failed to parse compatibility JSON."); });
+      if (!data || typeof data !== "object") throw new Error("Unexpected compatibility response format.");
 
       setSubmittedData(data);
       setActiveIndex(0);
@@ -165,31 +192,21 @@ export default function ChatPage() {
   };
 
   // ---------------- Research alternatives ----------------
-  // Backend expects: current_option (required), issue (optional), search_hint (optional)
   const handleRecommendation = async () => {
     resetErrors();
-    if (!validateForRecommendations()) {
-      setActiveIndex(4);
-      return;
-    }
-    if (!hasNetwork) {
-      setRecError("No network connection detected.");
-      setActiveIndex(4);
-      return;
-    }
+    if (!validateForRecommendations()) { setActiveIndex(4); return; }
+    if (!hasNetwork) { setRecError("No network connection detected."); setActiveIndex(4); return; }
 
-    const current_option = trimmedDrugs; // REQUIRED
-    const issue = trimmedSymptoms;       // OPTIONAL
-    const hintParts = [
-      issue || null,
-      patientId !== null ? `patient:${patientId}` : null,
-    ].filter(Boolean);
-    const search_hint = hintParts.join(" ").trim();
+    const current_option = trimmedDrugs;
+    const issue = trimmedSymptoms;
 
-    const queryParams = new URLSearchParams({
+    const qs = new URLSearchParams({
       current_option,
       issue,
-      search_hint,
+      // If you want to also pass patient context to research, uncomment:
+      // conditions: dedupePreserveOrder([...patientConditions, ...toList(trimmedSymptoms)]).join(","),
+      // allergies: patientAllergies.join(","),
+      // ongoingMeds: patientMeds.join(","),
     });
 
     setRecLoading(true);
@@ -199,7 +216,7 @@ export default function ChatPage() {
 
     try {
       const res = await fetchWithTimeout(
-        `http://localhost:5001/api/research?${queryParams.toString()}`,
+        `http://localhost:5001/api/research?${qs.toString()}`,
         { method: "GET", headers: { "Content-Type": "application/json" } },
         25000
       );
@@ -209,16 +226,9 @@ export default function ChatPage() {
         throw new Error(`Recommendations request failed (${res.status}). ${text || ""}`.trim());
       }
 
-      const data = await res.json().catch(() => {
-        throw new Error("Failed to parse recommendations JSON.");
-      });
-
-      if (!data || typeof data !== "object") {
-        throw new Error("Unexpected recommendations response format.");
-      }
-      if (data.ok === false) {
-        throw new Error(data.error || "Backend returned an error for recommendations.");
-      }
+      const data = await res.json().catch(() => { throw new Error("Failed to parse recommendations JSON."); });
+      if (!data || typeof data !== "object") throw new Error("Unexpected recommendations response format.");
+      if (data.ok === false) throw new Error(data.error || "Backend returned an error for recommendations.");
 
       setRecData(data);
       setActiveIndex(4);
@@ -237,10 +247,14 @@ export default function ChatPage() {
   const FieldError = ({ message }: { message?: string }) =>
     !message ? null : <div className={styles.fieldError}>{message}</div>;
 
-  // Build Alternative tabs
   const alternativeTabs = Array.isArray(recData?.result?.alternatives)
     ? recData.result.alternatives
     : [];
+
+  // preview what will be sent (optional; does NOT show allergies/meds in the form)
+  const mergedConditionsPreview = useMemo(() => {
+    return dedupePreserveOrder([...patientConditions, ...toList(trimmedSymptoms)]);
+  }, [patientConditions, trimmedSymptoms]);
 
   return (
     <div>
@@ -255,28 +269,28 @@ export default function ChatPage() {
         ease="power3.out"
       />
 
-      {/* Entire screen content container */}
       <div className={styles.formWrapper}>
-        {/* Global form error */}
         <ErrorBanner message={formError} />
 
-        {/* Inputs */}
+        {/* Inputs (ONLY Patient ID, Drug, Symptoms) */}
         <div className={styles.formContainer}>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">1.</span>
             <InputNumber
               placeholder="Patient ID"
-              value={patientId ?? undefined}
-              onValueChange={(e) =>
-                setPatientId(e.value !== undefined && e.value !== null ? Number(e.value) : null)
-              }
+              value={patientId}
+              useGrouping={false}
+              onValueChange={(e) => {
+                console.log("[InputNumber] onValueChange:", e.value, typeof e.value);
+                setPatientId(typeof e.value === "number" ? e.value : null);
+              }}
             />
           </div>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">2.</span>
             <InputText
-              placeholder="Drugs (e.g., metformin)"
+              placeholder="Drug (e.g., metformin)"
               value={drugs}
               onChange={(e) => setDrugs(e.target.value)}
               className={fieldErrors.drugs ? "p-invalid" : ""}
@@ -287,7 +301,7 @@ export default function ChatPage() {
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">3.</span>
             <InputText
-              placeholder="Symptoms / issue (e.g., kidney disease contraindication)"
+              placeholder="Symptoms / issue (comma separated)"
               value={symptoms}
               onChange={(e) => setSymptoms(e.target.value)}
               className={fieldErrors.symptoms ? "p-invalid" : ""}
@@ -310,69 +324,43 @@ export default function ChatPage() {
           </button>
         </div>
 
-        {/* Results (kept inside the SAME container for cohesion) */}
         {(submittedData || recData || compatError || recError) && (
           <>
             <div className={styles.tabviewContainer}>
               <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                 <TabPanel header="Input">
                   <ErrorBanner message={compatError} />
-                  <p>
-                    <strong>Drug:</strong> {submittedData?.input?.drug || drugs || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Conditions:</strong>{" "}
-                    {submittedData?.input?.conditions?.length
-                      ? submittedData.input.conditions.join(", ")
-                      : symptoms || "None"}
-                  </p>
-                  <p>
-                    <strong>Allergies:</strong>{" "}
-                    {submittedData?.input?.allergies?.length
-                      ? submittedData.input.allergies.join(", ")
-                      : "None"}
-                  </p>
-                  <p>
-                    <strong>Ongoing Medications:</strong>{" "}
-                    {submittedData?.input?.ongoingMeds?.length
-                      ? submittedData.input.ongoingMeds.join(", ")
-                      : "None"}
-                  </p>
+                  <p><strong>Drug:</strong> {submittedData?.input?.drug || drugs || "N/A"}</p>
+                  <p><strong>Patient Conditions:</strong> {mergedConditionsPreview.length ? mergedConditionsPreview.join(", ") : "None"}</p>
+                  <p><strong>Patient Active Medications:</strong> {patientMeds.length ? patientMeds.join(", ") : "None"}</p>
+                  <p><strong>Patient Allergies:</strong> {patientAllergies.length ? patientAllergies.join(", ") : "None"}</p>
+
+                  {/* intentionally NOT showing allergies / meds in UI */}
                 </TabPanel>
 
                 <TabPanel header="Evidence">
                   <ErrorBanner message={compatError} />
                   <ul>
-                    {submittedData?.result?.evidence_quotes?.map((quote: string, i: number) => (
-                      <li key={i}>{quote}</li>
-                    ))}
+                    {submittedData?.result?.evidence_quotes?.map((q: string, i: number) => (<li key={i}>{q}</li>))}
                   </ul>
-                  {!submittedData?.result?.evidence_quotes?.length && (
-                    <p>No evidence quotes available.</p>
-                  )}
+                  {!submittedData?.result?.evidence_quotes?.length && <p>No evidence quotes available.</p>}
                 </TabPanel>
 
                 <TabPanel header="Reasons">
                   <ErrorBanner message={compatError} />
                   <ul>
-                    {submittedData?.result?.reasons?.map((reason: string, i: number) => (
-                      <li key={i}>{reason}</li>
-                    ))}
+                    {submittedData?.result?.reasons?.map((r: string, i: number) => (<li key={i}>{r}</li>))}
                   </ul>
                   {!submittedData?.result?.reasons?.length && <p>No reasons returned.</p>}
                 </TabPanel>
 
                 <TabPanel header="Verdict">
                   <ErrorBanner message={compatError} />
-                  <p>
-                    <strong>{submittedData?.result?.verdict || "N/A"}</strong>
-                  </p>
+                  <p><strong>{submittedData?.result?.verdict || "N/A"}</strong></p>
                 </TabPanel>
 
-                {/* Alternatives: contains its OWN inner tabview per drug/class */}
                 <TabPanel header="Alternatives">
                   <ErrorBanner message={recError} />
-
                   <div className={styles.resultsActionRow}>
                     <button
                       onClick={handleRecommendation}
@@ -387,33 +375,17 @@ export default function ChatPage() {
                   </div>
 
                   {recLoading && <p>Loading alternatives…</p>}
+                  {!recLoading && !recError && !recData && <p>No recommendations yet. Click “Find Alternatives”.</p>}
 
-                  {!recLoading && !recError && !recData && (
-                    <p>No recommendations yet. Click “Find Alternatives”.</p>
-                  )}
-
-                  {!recLoading && !recError && alternativeTabs.length > 0 && (
+                  {!recLoading && !recError && Array.isArray(recData?.result?.alternatives) && recData.result.alternatives.length > 0 && (
                     <div className={styles.altTabs}>
                       <TabView>
-                        {alternativeTabs.map((alt: any, idx: number) => (
+                        {recData.result.alternatives.map((alt: any, idx: number) => (
                           <TabPanel key={idx} header={alt.name || `Alternative ${idx + 1}`}>
                             <div className={styles.altPane}>
-                              <div className={styles.altBody}>
-                                {alt.description || "No description available"}
-                              </div>
-
-                              {/* NEW: dosage line if present */}
-                              {alt.recommended_dosage && (
-                                <div className={styles.altDosage}>
-                                  Recommended dosage: {alt.recommended_dosage}
-                                </div>
-                              )}
-
-                              {alt.citation && (
-                                <div className={styles.altCardCitation}>
-                                  📖 {alt.citation}
-                                </div>
-                              )}
+                              <div className={styles.altBody}>{alt.description || "No description available"}</div>
+                              {alt.recommended_dosage && <div className={styles.altDosage}>Recommended dosage: {alt.recommended_dosage}</div>}
+                              {alt.citation && <div className={styles.altCardCitation}>📖 {alt.citation}</div>}
                             </div>
                           </TabPanel>
                         ))}
@@ -421,18 +393,9 @@ export default function ChatPage() {
                     </div>
                   )}
 
-                  {!recLoading && !recError && recData && alternativeTabs.length === 0 && (
+                  {!recLoading && !recError && recData && (!Array.isArray(recData.result?.alternatives) || recData.result.alternatives.length === 0) && (
                     <p>No alternatives returned from the service.</p>
                   )}
-
-                  {!recLoading &&
-                    !recError &&
-                    recData &&
-                    !Array.isArray(recData.result?.alternatives) && (
-                      <pre className={styles.altJson}>
-                        {JSON.stringify(recData.result ?? recData, null, 2)}
-                      </pre>
-                    )}
                 </TabPanel>
               </TabView>
             </div>
