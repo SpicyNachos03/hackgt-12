@@ -3,6 +3,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { useRouter } from "next/navigation";
+// Simple auth state - in a real app you'd use proper state management
 import { GoArrowUpRight } from 'react-icons/go';
 import './CardNav.css';
 
@@ -58,6 +59,8 @@ const CardNav: React.FC<CardNavProps> = ({
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const router = useRouter();
+  // For demo purposes, assume user is not logged in
+  const user = null;
 
   const calculateHeight = () => {
     const navEl = navRef.current;
@@ -172,11 +175,13 @@ const CardNav: React.FC<CardNavProps> = ({
 
   /** One lightweight handler for the CTA */
   const handleCta = () => {
-    if (isAuthenticated) {
+    if (user) {
+      // User is logged in, go to chat page
       router.push(postLoginRedirect);
     } else {
-      const url = `${loginPath}?returnTo=${encodeURIComponent(postLoginRedirect)}`;
-      router.push(url);
+      // User is not logged in, redirect to Auth0 login
+      const returnTo = encodeURIComponent(postLoginRedirect);
+      window.location.href = `/auth/login?returnTo=${returnTo}`;
     }
   };
 
@@ -205,9 +210,9 @@ const CardNav: React.FC<CardNavProps> = ({
             className="card-nav-cta-button"
             style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
             onClick={handleCta}
-            aria-label={isAuthenticated ? 'Open chat' : 'Sign up or login'}
+            aria-label={user ? 'Open chat' : 'Sign up or login'}
           >
-            {isAuthenticated ? 'Open Chat' : 'Login'}
+            {user ? 'Open Chat' : 'Login'}
           </button>
         </div>
 
